@@ -96,14 +96,3 @@ class Dataset(object):
       a_one_hot[qa_pair[1]] = 1
       one_hot_batch.append((q_one_hot, a_one_hot))
     return np.asarray(one_hot_batch), self._labels[start:end]
-
-# testing
-# print(TRIGRAM_SIZE)
-# construct_dataset_yahoo()
-# Xs_train, Ys_train, Xs_test, Ys_test = split_dataset(100)
-# QA = DatasetSequence(Xs_test, Ys_test)
-# for _ in range(12):
-#   qa_pairs, labels = QA.next_batch(10)
-#   print(labels)
-#   print(qa_pairs[:,0,:].shape) # one-hot encoded question in batch
-#   print(qa_pairs[:,1,:].shape) # one-hot encoded answer in batch

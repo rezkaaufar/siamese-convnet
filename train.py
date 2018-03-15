@@ -8,45 +8,18 @@ import codecs
 import siamese
 import utils
 
-yahoo = True
+tri2index = preprocess.load_letter_trigram()  # dictionary to convert trigram to index (for one hot vector)
+TRIGRAM_SIZE = len(tri2index)
 
-# TODO
-# increase the number of filter [DONE]
-# separate train and test data in quora [DONE]
-# short question, people describe it in the comment only
-# add BM25 for the last score
-if yahoo:
-  tri2index = preprocess.load_letter_trigram_yahoo() # dictionary to convert trigram to index (for one hot vector)
-  TRIGRAM_SIZE = len(tri2index)
+# prepare data and tf.session
+Xs_train, Ys_train = utils.read_dataset()
+QA_train = utils.Dataset(Xs_train, Ys_train)
 
-  # prepare data and tf.session
-  Xs_train, Ys_train = utils.read_dataset_json()
-  # Xs_valid, Ys_valid = utils.read_dataset_json(qap_path="./dataset/qa_pairs_validation.dump",
-  #                                              label_path="./dataset/labels_validation.dump")
-  QA_train = utils.Dataset(Xs_train, Ys_train)
-  # QA_test = utils.Dataset(Xs_valid, Ys_valid)
-
-  # qa_pairs_test, labels_test = QA_test.next_batch(100)
-
-  # test data
-  def generate_test_data():
-    with open('./dataset/test_batch_yahoo_red.dump', 'r', encoding='utf-8') as f:
-      test_batch = json.load(f)
-      return test_batch
-
-else:
-  tri2index = preprocess.load_letter_trigram()  # dictionary to convert trigram to index (for one hot vector)
-  TRIGRAM_SIZE = len(tri2index)
-
-  # prepare data and tf.session
-  Xs_train, Ys_train = utils.read_dataset()
-  QA_train = utils.Dataset(Xs_train, Ys_train)
-
-  # test data
-  def generate_test_data():
-    with open('./dataset/test_batch.dump', 'r', encoding='utf-8') as f:
-      test_batch = json.load(f)
-      return test_batch
+# test data
+def generate_test_data():
+  with open('./dataset/test_batch.dump', 'r', encoding='utf-8') as f:
+    test_batch = json.load(f)
+    return test_batch
 
 sess = tf.InteractiveSession()
 
@@ -100,18 +73,6 @@ for step in range(TRAIN_STEP):
       qa_pairs_test = np.asarray(pl[0])
       labels_test = np.asarray(pl[1])
 
-      # ### YAHOO CODE ###
-
-      one_hot_batch = []
-      for elem in qa_pairs_test:
-        q1_one_hot = np.zeros((TRIGRAM_SIZE))
-        q2_one_hot = np.zeros((TRIGRAM_SIZE))
-        q1_one_hot[elem[0]] = 1
-        q2_one_hot[elem[1]] = 1
-        one_hot_batch.append((q1_one_hot,q2_one_hot))
-      qa_pairs_test = np.asarray(one_hot_batch)
-
-      ### END ###
       scr = np.expand_dims(np.asarray(scr),1)
       ap, rr, pat1, cap, crr, cpat1 = sess.run([siamese.map, siamese.mrr, siamese.patk,
                                siamese.cmap, siamese.cmrr, siamese.cpatk], feed_dict={
@@ -138,7 +99,6 @@ for step in range(TRAIN_STEP):
     cmaps.append(map / len(test_batch))
     cmrrs.append(mrr / len(test_batch))
     cpatks.append(patk / len(test_batch))
-
 
   if step % 500 == 0 and step != 0:
     checkpoint_path = './model/model.ckpt'

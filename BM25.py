@@ -1,24 +1,5 @@
 import numpy as np
 
-
-target = 'I have a huge dental problem ?'
-answers = [['Help', 'im', 'scared', '!', 'Dental', 'problems' '?'],
-['Do I need 2 dental bridges or just one huge one on my teeth?'],
-['What', 'do', 'you', 'call', 'the', 'nerve', 'problem', 'involving', 'dental', 'and', 'facial', 'nerve', '?'],
-['I', 'have', 'a', 'relative', 'who', 'needs', 'free', 'dental', 'work', '?'],
-['Dental', 'problem', '?', 'Pulling', 'teeth', 'out', '?'],
-['A', 'Deadly', 'Dental', 'Massacre', '...', '?'],
-['I', 'need', 'a', 'professional', 'opinion', 'about', 'my', 'dental', 'problems', 'can', 'anyone', 'help', 'me', '?'],
-['Huge', 'Dental', 'problems', '?'],
-['Dental', 'problem', '.', 'help', '?' '(', 'bite', 'issue', ')', '?'],
-['Dental', '-', 'Crown', 'problem', '?'],
-['Problem', 'with', 'dental', 'office', 'and', 'insurance', 'predetermination', '?'],
-['A', 'dental', 'problem', '??????????????????????',  '/', '...'],
-['What', 'kind', 'of', 'dental', 'problems', 'cound', 'a', '69', 'year', 'old', 'male', 'have', ',', 'diagnosed', 'Diabetes', 'and', 'at', 'present', 'extremely', 'pain', '?'],
-['No', 'dental', 'insurance', ',', 'but', 'a', 'huge', 'problem','.', 'Please' 'help', '.'],
-['Lots', 'of', 'dental', 'pain', '(', 'nerve', 'shocks', ')', '.', 'Lots', 'of', 'insurance',',', 'but', 'no', 'money', 'for', 'the', 'huge', 'copays','.', 'What', 'to', 'do','?', 'oouch','!','?']]
-
-
 def char_trigram_creator(sentence, n):
   grams = []
   words = sentence.split(" ")
@@ -30,7 +11,6 @@ def char_trigram_creator(sentence, n):
 
 
 def BM25(target, samples, k_1=1.2, b=0.75):
-
     target = char_trigram_creator(target, 3)
     doc_lengths = []
     n_samples = len(samples)
@@ -78,6 +58,4 @@ def BM25(target, samples, k_1=1.2, b=0.75):
         scores.append(score)
 
     return scores
-
-print(BM25(target, answers))
 
